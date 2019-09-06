@@ -41,8 +41,6 @@ spec:
       - command:
         - java
         - -Djava.security.egd=file:/instruction/./urandom
-        - -Dskywalking.trace.ignore_path=/eureka/**
-        - -javaagent:/agent/skywalking-agent.jar
         - -jar
         - -Xms256m
         - -Xmx512m
