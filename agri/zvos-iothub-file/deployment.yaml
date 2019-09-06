@@ -1,0 +1,100 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-file
+  name: zvos-iothub-file
+  namespace: agri
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-file
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        field.cattle.io/ports: '[[{"containerPort":6799,"dnsName":"zvos-iothub-file","kind":"ClusterIP","name":"6799tcp2","protocol":"TCP"}]]'
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-file
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - zlrancher019
+                      - zlrancher012
+                      - zlrancher013
+                      - zlrancher014
+      containers:
+      - command:
+        - java
+        - -Djava.security.egd=file:/dev/./urandom
+        - -Dskywalking.trace.ignore_path=/eureka/**
+        - -javaagent:/agent/skywalking-agent.jar
+        - -jar
+        - -Xms256m
+        - -Xmx512m
+        - /app/zvos-iothub-file-srv-1.0.1-SNAPSHOT.jar
+        - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
+        - --eureka.instance.prefer-ip-address=true
+        - --spring.datasource.url=${APP_DB_URL}
+        - --file.baseUrl=http://172.30.198.215:30002/file/v1/download/
+        env:
+        - name: SW_AGENT_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
+          valueFrom:
+            configMapKeyRef:
+              key: backend_service
+              name: collector
+        - name: EK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: eurake-host
+              name: host-config
+              optional: false
+        - name: APP_DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zvos_file_db
+              name: zvos-db-cf
+              optional: false
+        image: ${CICD_IMAGE}:${CICD_GIT_COMMIT}
+        imagePullPolicy: IfNotPresent
+        name: zvos-iothub-file
+        ports:
+          - containerPort: 6799
+            name: 6799tcp2
+            protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: zvos
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

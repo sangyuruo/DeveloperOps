@@ -1,0 +1,19 @@
+data:
+  zvos_app_cfg_db: jdbc:mysql://10.39.52.73:3306/zvos_app_cfg_db?useSSL=false&characterEncoding=utf8
+  zvos_app_cfg_db_pass: admin
+  zvos_app_cfg_db_user: sqladmin
+  zvos_app_instruction_db: jdbc:mysql://10.39.52.73:3306/zvos_app_instruction_db?useSSL=false&characterEncoding=utf8
+  zvos_app_device_db: jdbc:mysql://10.39.52.73:3306/zvos_app_device_db?useSSL=false&characterEncoding=utf8
+  zvos_app_user_db: jdbc:mysql://10.39.52.73:3306/zvos_app_user_db?useSSL=false&characterEncoding=utf8
+  zvos_base_db: jdbc:mysql://10.39.52.73:3306/zvos_base_db?useSSL=false&characterEncoding=utf8
+  zvos_device_db: jdbc:mysql://10.39.52.73:3306/zvos_device_db?useSSL=false&characterEncoding=utf8
+  zvos_easystream_db: jdbc:mysql://10.39.52.73:3306/zvos_easystream_db?useSSL=false&characterEncoding=utf8&allowMultiQueries=true
+  zvos_edge_db: jdbc:mysql://10.39.52.73:3306/zvos_edge_db?useSSL=false&characterEncoding=utf8
+  zvos_file_db: jdbc:mysql://10.39.52.73:3306/zvos_file_db?useSSL=false&characterEncoding=utf8
+  zvos_product_db: jdbc:mysql://10.39.52.73:3306/zvos_product_new_db?useSSL=false&characterEncoding=utf8
+  zvos_studio_db: jdbc:mysql://10.39.52.73:3306/zvos_studio_db?useSSL=false&characterEncoding=utf8
+  zvos_user_db: jdbc:mysql://10.39.52.73:3306/zvos_user_db?useSSL=false&characterEncoding=utf8
+  zvos_iothub_device_db: jdbc:mysql://10.39.52.73:3306/zvos_iothub_device_db?useSSL=false&characterEncoding=utf8
+  zvos_iothub_latestdata_db: jdbc:mysql://10.39.52.73:3306/zvos_iothub_latestdata_db?useSSL=false&characterEncoding=utf8
+  zvos_iothub_product_db: jdbc:mysql://10.39.52.73:3306/zvos_iothub_product_db?useSSL=false&characterEncoding=utf8
+

@@ -1,0 +1,116 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-gateway-zl12
+  name: zvos-iothub-gateway-zl12
+  namespace: agri
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-gateway-zl12
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        field.cattle.io/ports: '[[{"containerPort":2603,"dnsName":"zvos-iothub-gateway-zl12-nodeport","kind":"NodePort","name":"2603tcp300111","protocol":"TCP","sourcePort":30011}]]'
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-agri-zvos-iothub-gateway-zl12
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - zlrancher011
+                      - zlrancher010
+                      - zlrancher016
+                      - zlrancher017
+      containers:
+      - command:
+        - java
+        - -Djava.security.egd=file:/dev/./urandom
+        - -Dskywalking.trace.ignore_path=/eureka/**
+        - -javaagent:/agent/skywalking-agent.jar
+        - -jar
+        - /app/zvos-iothub-gateway-zl12-1.0.1-SNAPSHOT.jar
+        - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
+        - --eureka.instance.prefer-ip-address=true
+        - --spring.datasource.url=${APP_DB_URL}
+        - --spring.redis.host=${REDIS_URL}
+        env:
+        - name: SW_AGENT_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: KAFKA_URL
+          valueFrom:
+            configMapKeyRef:
+              key: kafka-host
+              name: host-config
+              optional: false
+        - name: ZK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zk-host
+              name: host-config
+              optional: false
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              key: redis-host
+              name: host-config
+              optional: false
+        - name: EK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: eurake-host
+              name: host-config
+              optional: false
+        - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
+          valueFrom:
+            configMapKeyRef:
+              key: backend_service
+              name: collector
+        - name: APP_DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zvos_iothub_device_db
+              name: zvos-db-cf
+              optional: false
+        image: ${CICD_IMAGE}:${CICD_GIT_COMMIT}
+        imagePullPolicy: IfNotPresent
+        name: zvos-iothub-gateway
+        ports:
+          - containerPort: 2603
+            name: 2603tcp300111
+            protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: zvos
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

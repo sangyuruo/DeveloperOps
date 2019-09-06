@@ -1,0 +1,106 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-agri-zvos-app-instruction
+  name: zvos-app-instruction
+  namespace: agri
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-agri-zvos-app-instruction
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        field.cattle.io/ports: '[[{"containerPort":9799,"dnsName":"zvos-app-instruction","kind":"ClusterIP","name":"9799tcp2","protocol":"TCP"}]]'
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-agri-zvos-app-instruction
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - zlrancher019
+                      - zlrancher012
+                      - zlrancher013
+                      - zlrancher014
+      containers:
+      - command:
+        - java
+        - -Djava.security.egd=file:/instruction/./urandom
+        - -Dskywalking.trace.ignore_path=/eureka/**
+        - -javaagent:/agent/skywalking-agent.jar
+        - -jar
+        - -Xms256m
+        - -Xmx512m
+        - /app/zvos-app-instruction-srv-1.0.1-SNAPSHOT.jar
+        - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
+        - --eureka.instance.prefer-ip-address=true
+        - --spring.datasource.url=${APP_DB_URL}
+        - --spring.redis.host=${REDIS_URL}
+        env:
+        - name: SW_AGENT_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: EK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: eurake-host
+              name: host-config
+              optional: false
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              key: redis-host
+              name: host-config
+              optional: false
+        - name: SW_AGENT_COLLECTOR_BACKEND_SERVICES
+          valueFrom:
+            configMapKeyRef:
+              key: backend_service
+              name: collector
+        - name: APP_DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zvos_app_device_db
+              name: zvos-db-cf
+              optional: false
+        image: ${CICD_IMAGE}:${CICD_GIT_COMMIT}
+        imagePullPolicy: IfNotPresent
+        name: zvos-app-instruction
+        ports:
+        - containerPort: 9799
+          name: 9799tcp2
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /instruction/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: zvos
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
