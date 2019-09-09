@@ -51,7 +51,7 @@ spec:
         - --spring.cloud.stream.kafka.binder.brokers=${KAFKA_URL}
         - --spring.cloud.stream.kafka.binder.zk-nodes=${ZK_URL}
         - --spring.redis.host=${REDIS_URL}
-        - --engine.components.smsNotify.restUrl=${SMS_URL}
+        - --engine.components.smsNotify.restUrl=http://base.agri.paasdev.zoomlion.com/v1/sms.notify
         env:
         - name: APP_DB_URL
           valueFrom:

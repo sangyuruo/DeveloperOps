@@ -39,6 +39,14 @@ spec:
         - --spring.cloud.stream.kafka.binder.brokers=${KAFKA_URL}
         - --spring.cloud.stream.kafka.binder.zk-nodes=${ZK_URL}
         - --spring.redis.host=${REDIS_URL}
+        - --device.auth.zl12.ip=10.39.52.226
+        - --device.auth.zl12.port=2603
+        - --device.auth.zl13.ip=10.39.52.226
+        - --device.auth.zl13.port=7055
+        - --device.auth.mqtt.ip=222.240.205.186
+        - --device.auth.mqtt.port=1883
+        - --device.auth.jt808.ip=10.39.52.226
+        - --device.auth.jt808.port=6868
         env:
         - name: EK_URL
           valueFrom:

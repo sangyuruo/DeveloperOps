@@ -48,7 +48,7 @@ spec:
         - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
         - --eureka.instance.prefer-ip-address=true
         - --spring.datasource.url=${APP_DB_URL}
-        - --file.baseUrl=http://172.30.198.215:30002/file/v1/download/
+        - --file.baseUrl=http://172.30.198.215:31901/file/v1/download/
         env:
         - name: SW_AGENT_NAME
           valueFrom:

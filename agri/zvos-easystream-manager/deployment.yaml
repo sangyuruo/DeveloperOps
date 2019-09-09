@@ -51,9 +51,11 @@ spec:
         - --spring.cloud.stream.kafka.binder.brokers=${KAFKA_URL}
         - --spring.cloud.stream.kafka.binder.zk-nodes=${ZK_URL}
         - --spring.redis.host=${REDIS_URL}
-        - --engine.components.smsNotify.restUrl=${SMS_URL}
-        - --engine.components.webNotify.websocketUrl=http://websocket.zvos.paasdev.zoomlion.com/v1/ws/send
-        - --engine.components.webNotify.metaUrl=http://meta.zvos.paasdev.zoomlion.com/v1/meta/notify
+        - --engine.components.workdatakafka.brokers=${KAFKA_URL}
+        - --engine.components.smsNotify.restUrl=http://base.agri.paasdev.zoomlion.com/v1/sms.notify
+        - --engine.components.webNotify.websocketUrl=http://websocket.agri.paasdev.zoomlion.com/v1/ws/send
+        - --engine.components.webNotify.metaUrl=http://meta.agri.paasdev.zoomlion.com/v1/meta/notify
+        - --gearpump.flow.debug.kfkAddress=${KAFKA_URL}
         env:
         - name: APP_DB_URL
           valueFrom:
