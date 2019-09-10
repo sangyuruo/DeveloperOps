@@ -25,6 +25,19 @@ spec:
       labels:
         workload.user.cattle.io/workloadselector: deployment-agri-zvos-mqtt-transport
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - zlrancher009
+                      - zlrancher012
+                      - zlrancher013
+                      - zlrancher014
+                      - zlrancher019
       containers:
       - command:
         - java
