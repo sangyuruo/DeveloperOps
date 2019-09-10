@@ -33,11 +33,10 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - zlrancher009
+                      - zlrancher019
                       - zlrancher012
                       - zlrancher013
                       - zlrancher014
-                      - zlrancher019
       containers:
       - command:
         - java
