@@ -53,6 +53,7 @@ spec:
         - --spring.redis.host=${REDIS_URL}
         - --elastic.job.zk.namespace=easystream_job_879211
         - --spring.cloud.stream.bindings.t_debug_out.group=easystream-agent-group98089
+        - --elastic.job.zk.serverLists=${ZK_URL}
         env:
         - name: APP_DB_URL
           valueFrom:

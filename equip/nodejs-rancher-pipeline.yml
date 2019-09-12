@@ -1,0 +1,28 @@
+stages:
+  - name: node
+    steps:
+      - runScriptConfig:
+          image: index.paas.zoomlion.com/library/node-zvos:11.1
+          shellScript: npm install --registry=https://registry.npm.taobao.org && npm run
+            build
+      - runScriptConfig:
+          image: java:8
+          shellScript: |-
+            wget ${ENV_DF_HOST}/equip/${CICD_GIT_REPO_NAME}/file.list
+            wget -i file.list
+        envFrom:
+          - sourceName: envs
+            sourceKey: ENV_DF_HOST
+            targetKey: ENV_DF_HOST
+  - name: 打包
+    steps:
+      - publishImageConfig:
+          dockerfilePath: ./Dockerfile
+          buildContext: .
+          tag: equip/${CICD_GIT_REPO_NAME}:${CICD_GIT_COMMIT}
+          pushRemote: true
+          registry: index.paas.zoomlion.com
+        env:
+          PLUGIN_DEBUG: "true"
+          PLUGIN_INSECURE: "true"
+timeout: 60

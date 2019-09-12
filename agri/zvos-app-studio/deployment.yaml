@@ -50,7 +50,7 @@ spec:
         - --spring.datasource.url=${APP_DB_URL}
         - --spring.cloud.stream.kafka.binder.brokers=${KAFKA_URL}
         - --spring.cloud.stream.kafka.binder.zk-nodes=${ZK_URL}
-        - --webHost=http://{code}.app.zvos.paasdev.zoomlion.com/#/app/view/{code}/login
+        - --webHost=http://{code}.app.agri.paasdev.zoomlion.com/#/app/view/{code}/login
         env:
         - name: SW_AGENT_NAME
           valueFrom:

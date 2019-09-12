@@ -1,0 +1,31 @@
+stages:
+  - name: build
+    steps:
+      - runScriptConfig:
+          image: index.paas.zoomlion.com/library/maven-zvos:3.3.9.2
+          shellScript: mvn package -Dmaven.test.skip=true
+      - runScriptConfig:
+          image: java:8
+          shellScript: |-
+            wget ${ENV_DF_HOST}/agri/${CICD_GIT_REPO_NAME}/file.list
+            wget -i file.list
+        envFrom:
+          - sourceName: envs
+            sourceKey: ENV_DF_HOST
+            targetKey: ENV_DF_HOST
+  - name: 打包
+    steps:
+      - publishImageConfig:
+          dockerfilePath: ./Dockerfile
+          buildContext: .
+          tag: agri/${CICD_GIT_REPO_NAME}:${CICD_GIT_COMMIT}
+          pushRemote: true
+          registry: index.paas.zoomlion.com
+        env:
+          PLUGIN_DEBUG: "true"
+          PLUGIN_INSECURE: "true"
+  - name: 部署
+    steps:
+      - applyYamlConfig:
+          path: ./deployment.yaml
+timeout: 60

@@ -23,6 +23,19 @@ spec:
       labels:
         workload.user.cattle.io/workloadselector: deployment-zvos-zv-equip-frontend
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - zlrancher009
+                      - zlrancher012
+                      - zlrancher013
+                      - zlrancher014
+                      - zlrancher019
       containers:
       - image: ${CICD_IMAGE}:${CICD_GIT_COMMIT}
         imagePullPolicy: IfNotPresent
