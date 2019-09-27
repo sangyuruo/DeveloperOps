@@ -48,6 +48,9 @@ spec:
         - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
         - --eureka.instance.prefer-ip-address=true
         - --spring.datasource.url=${APP_DB_URL}
+        - --spring.datasource.instructionplus.jdbc-url=${APP_LOG4J_DB_URL}
+        - --spring.datasource.device.jdbc-url=${APP_DB_URL}
+        - --spring.datasource.instruction.jdbc-url=${APP_INSTRUCTION_DB_URL}
         - --spring.redis.host=${REDIS_URL}
         env:
         - name: SW_AGENT_NAME
@@ -76,6 +79,18 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: zvos_app_device_db
+              name: zvos-db-cf
+              optional: false
+        - name: APP_LOG4J_DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zvos_app_device_db_log4jdbc
+              name: zvos-db-cf
+              optional: false
+        - name: APP_INSTRUCTION_DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zvos_app_instruction_db
               name: zvos-db-cf
               optional: false
         image: ${CICD_IMAGE}:${CICD_GIT_COMMIT}
