@@ -41,6 +41,8 @@ spec:
       - command:
         - java
         - -Djava.security.egd=file:/dev/./urandom
+        - -Dskywalking.trace.ignore_path=/eureka/**
+        - -javaagent:/agent/skywalking-agent.jar
 
         - -jar
         - /app/zvos-iothub-gateway-zl13-1.0.1-SNAPSHOT.jar
