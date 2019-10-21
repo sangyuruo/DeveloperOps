@@ -48,6 +48,8 @@ spec:
         - --eureka.client.serviceUrl.defaultZone=http://${EK_URL}:8201/eureka/
         - --eureka.instance.prefer-ip-address=true
         - --spring.datasource.url=${APP_DB_URL}
+        - --spring.cloud.stream.kafka.binder.brokers=${KAFKA_URL}
+        - --spring.cloud.stream.kafka.binder.zk-nodes=${ZK_URL}
         - --spring.redis.host=${REDIS_URL}
         env:
         - name: SW_AGENT_NAME
@@ -59,6 +61,18 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: eurake-host
+              name: host-config
+              optional: false
+        - name: KAFKA_URL
+          valueFrom:
+            configMapKeyRef:
+              key: kafka-host
+              name: host-config
+              optional: false
+        - name: ZK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: zk-host
               name: host-config
               optional: false
         - name: REDIS_URL
